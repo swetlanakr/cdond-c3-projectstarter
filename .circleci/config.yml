@@ -132,7 +132,7 @@ jobs:
           command: |
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAdress' \
-              --output text > /Users/swetlanakramer/Desktop/DevOpsTraining/Modul_3/cdond-c3-projectstarter/.circleci/files/inventory.txt
+              --output text > ~/Users/swetlanakramer/Desktop/DevOpsTraining/Modul_3/cdond-c3-projectstarter/.circleci/files/inventory.txt
 
       - persist_to_workspace:
           root: ~/
