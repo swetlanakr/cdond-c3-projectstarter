@@ -136,7 +136,6 @@ jobs:
           command: |
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:project,Values=udapeople" \
               --output text > inventory.txt
 
       - persist_to_workspace:
@@ -163,7 +162,7 @@ jobs:
           name: Run Playbook and Configure server
           command: |
             cd .circleci/ansible
-            ansible-playbook -i /tmp/ansible/inventory configure-server.yml
+            ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment
 
   run-migrations:
