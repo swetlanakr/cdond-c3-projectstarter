@@ -91,7 +91,7 @@ jobs:
           command: |
               cd frontend
               npm install
-
+              npm audit fix --audit-level=critical
 
   scan-backend:
     docker:
@@ -105,7 +105,7 @@ jobs:
           command: |
             cd backend
             npm install
-  
+            npm audit fix --audit-level=critical
 
   deploy-infrastructure:
     docker:
@@ -176,6 +176,7 @@ jobs:
           command: |
             npm install
             npm run build
+            npm audit fix
             npm run migrations > migration_status
       - run:
           name: Send migration results to memstash
