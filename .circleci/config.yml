@@ -132,35 +132,36 @@ jobs:
           command: |
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text >> ~/inventory.txt
+              --output text >> ~/ansible/inventory.txt
 
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/.circleci/ansible/inventory.txt  
+            - .circleci/ansible/inventory.txt  
 # Here's where you will add some code to rollback on failure    
 
-#  configure-infrastructure:
-#    docker:
-#      - image: python:3.7-alpine3.11
-#    steps:
-#      - checkout
-#      - attach_workspace:
-#          at: ~/project
-#      - add_ssh_keys:
-#          fingerprints: [""]
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            apk add --update tar gzip ansible nodejs npm curl 
-#            pip install awscli
-#      - run:
-#          name: Configure server
-#          command: |
-#            # Your code here
+  configure-infrastructure:
+    docker:
+      - image: [python:3.7-alpine3.11, amazon/aws-cli]
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/.circleci
+      - add_ssh_keys:
+          fingerprints: ["33:e8:e6:2b:6f:ec:39:36:4d:3d:62:ce:2c:97:36:48"]
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update tar gzip ansible nodejs npm curl 
+            pip install awscli
+      - run:
+          name: Run Playbook and Configure server
+          command: |
+            cd .circleci/ansible
+            ansible-playbook -i /tmp/ansible/inventory configure-server.yml
+      - destroy_environment
 #            exit 1
 #      # Here's where you will add some code to rollback on failure  
-
 
 workflows:
   default:
@@ -176,3 +177,6 @@ workflows:
       - scan-backend:
           requires: [build-backend]
       - deploy-infrastructure
+          requiers: [test-frontend, test-backend, scan-frontend, scan-backend]
+      - configure-infrastructure
+          requires: [deploy-infrastructure]
