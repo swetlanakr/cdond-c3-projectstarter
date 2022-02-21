@@ -176,7 +176,6 @@ jobs:
           command: |
             npm install
             npm run build
-            npm audit fix
             npm run migrations > migration_status
       - run:
           name: Send migration results to memstash
