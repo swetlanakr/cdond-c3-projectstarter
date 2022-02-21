@@ -140,6 +140,28 @@ jobs:
             - project/.circleci/ansible/inventory.txt  
 # Here's where you will add some code to rollback on failure    
 
+#  configure-infrastructure:
+#    docker:
+#      - image: python:3.7-alpine3.11
+#    steps:
+#      - checkout
+#      - attach_workspace:
+#          at: ~/project
+#      - add_ssh_keys:
+#          fingerprints: [""]
+#      - run:
+#          name: Install dependencies
+#          command: |
+#            apk add --update tar gzip ansible nodejs npm curl 
+#            pip install awscli
+#      - run:
+#          name: Configure server
+#          command: |
+#            # Your code here
+#            exit 1
+#      # Here's where you will add some code to rollback on failure  
+
+
 workflows:
   default:
     jobs:
