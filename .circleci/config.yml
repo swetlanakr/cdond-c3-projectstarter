@@ -148,7 +148,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/.circleci
+          at: .
       - add_ssh_keys:
           fingerprints: ["33:e8:e6:2b:6f:ec:39:36:4d:3d:62:ce:2c:97:36:48"]
       - run:
@@ -162,8 +162,35 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i /tmp/ansible/inventory configure-server.yml
       - destroy-environment
-#            exit 1
-#      # Here's where you will add some code to rollback on failure  
+
+  run-migrations:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          name: Run migrations
+          working_directory: ./backend
+          command: |
+            npm install
+            #npm run build
+            npm run migrations > migration_status
+      - run:
+          name: Send migration results to memstash
+          working_directory: ./backend
+          command: |
+            if grep -q "has been executed successfully" migration_status
+            then
+              echo "DB migration was successful, will update KVDB..."
+              curl https://kvdb.io/S92RkedR6mWgtZxgZ4DKmF/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+            else
+              echo "DB migration failed, please verify setup! Probably the database already exists. Verify setup!"
+              curl https://kvdb.io/S92RkedR6mWgtZxgZ4DKmF/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
+            fi
+            echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"     
+      - destroy-environment
+#      - revert-migrations
+     # Here's where you will add some code to rollback on failure   
 
 workflows:
   default:
@@ -182,3 +209,5 @@ workflows:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
+      - run-migrations:
+          reuqires: [deploy-infrastructure, configure-infrastructure]
