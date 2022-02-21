@@ -16,6 +16,20 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.workflow-id >>
             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.workflow-id >>
 
+  revert-migrations:
+  description: Revert the last migration if successfully run in the current workflow.
+  steps:
+    - run:
+        name: Revert migrations
+        when: on_fail
+        command: |
+         curl https://kvdb.io/62gEv1wD1yPwEk9FQE4KqK/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'MIGRATION_OK'
+          if(( migrations==1 )); 
+          then
+            cd ~/project/backend   
+            npm install       
+            npm run migrations:revert
+          fi
 jobs:
   build-frontend:
     docker:
@@ -181,6 +195,7 @@ jobs:
           name: Send migration results to memstash
           working_directory: ./backend
           command: |
+            echo "insecure" >> ~/.curlrc
             if grep -q "has been executed successfully" migration_status
             then
               echo "DB migration was successful, will update KVDB..."
@@ -190,9 +205,8 @@ jobs:
               curl https://kvdb.io/62gEv1wD1yPwEk9FQE4KqK/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
             fi
             echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
-            echo "insecure" >> ~/.curlrc
-#      - destroy-environment
-#      - revert-migrations
+      - destroy-environment
+      - revert-migrations
      # Here's where you will add some code to rollback on failure   
 
 workflows:
