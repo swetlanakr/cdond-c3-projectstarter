@@ -7,8 +7,6 @@ commands:
       workflow-id:
         type: string
         default: ${CIRCLE_WORKFLOW_ID:0:7} 
-    docker:
-        - image: amazon/aws-cli
     steps:
       - run:
           name: Destroy environments
@@ -193,7 +191,7 @@ jobs:
               curl https://kvdb.io/S92RkedR6mWgtZxgZ4DKmF/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
             fi
             echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"     
-      - destroy-environment
+#      - destroy-environment
 #      - revert-migrations
      # Here's where you will add some code to rollback on failure   
 
