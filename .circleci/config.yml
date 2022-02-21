@@ -184,12 +184,13 @@ jobs:
             if grep -q "has been executed successfully" migration_status
             then
               echo "DB migration was successful, will update KVDB..."
-              curl https://kvdb.io/Ezk4fbEWvhskgHFEoX6D6K/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl https://kvdb.io/NY2Mjv7RsBQmdyjoVwdvx1/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             else
               echo "DB migration failed, please verify setup! Probably the database already exists. Verify setup!"
-              curl https://kvdb.io/Ezk4fbEWvhskgHFEoX6D6K/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
+              curl https://kvdb.io/NY2Mjv7RsBQmdyjoVwdvx1/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
             fi
-            echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"     
+            echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
+            echo "insecure" >> ~/.curlrc
 #      - destroy-environment
 #      - revert-migrations
      # Here's where you will add some code to rollback on failure   
