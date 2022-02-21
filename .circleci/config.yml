@@ -210,4 +210,4 @@ workflows:
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
-          reuqires: [deploy-infrastructure, configure-infrastructure]
+          requires: [deploy-infrastructure, configure-infrastructure]
