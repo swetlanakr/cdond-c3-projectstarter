@@ -23,7 +23,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            curl https://kvdb.io/62gEv1wD1yPwEk9FQE4KqK/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'MIGRATION_OK'
+            curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'MIGRATION_OK'
             if(( migrations==1 )); 
             then
               cd ~/project/backend   
@@ -213,6 +213,11 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - run:
+          name: Install tar/gzip utility
+          command: |
+            yum -y install tar
+            yum -y install gzips
       - run:
           name: Install dependencies
           command: |
