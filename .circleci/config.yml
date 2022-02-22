@@ -217,7 +217,7 @@ jobs:
           name: Install tar/gzip utility
           command: |
             yum -y install tar
-            yum -y install gzips
+            yum -y install gzip
       - run:
           name: Install dependencies
           command: |
