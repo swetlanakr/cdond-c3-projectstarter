@@ -30,6 +30,7 @@ commands:
               npm install       
               npm run migrations:revert
             fi
+
 jobs:
   build-frontend:
     docker:
@@ -142,8 +143,7 @@ jobs:
               --template-file .circleci/files/frontend.yml \
               --tags project=udapeople \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
-            
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"              
       - run:
           name: Add back-end ip to ansible inventory
           working_directory: ./.circleci/ansible
@@ -151,12 +151,12 @@ jobs:
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text > inventory.txt
-
       - persist_to_workspace:
           root: .
           paths:
-            - ./.circleci/ansible/inventory.txt  
-# Here's where you will add some code to rollback on failure    
+            - ./.circleci/ansible/inventory.txt 
+      - destroy-environment 
+ 
 
   configure-infrastructure:
     docker:
@@ -199,15 +199,53 @@ jobs:
             if grep -q "has been executed successfully" migration_status
             then
               echo "DB migration was successful, will update KVDB..."
-              curl https://kvdb.io/62gEv1wD1yPwEk9FQE4KqK/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             else
               echo "DB migration failed, please verify setup! Probably the database already exists. Verify setup!"
-              curl https://kvdb.io/62gEv1wD1yPwEk9FQE4KqK/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
+              curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
             fi
             echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
       - destroy-environment
       - revert-migrations
-     # Here's where you will add some code to rollback on failure   
+ 
+  deploy-frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update && sudo apt-get install -yy less
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+      - run:
+          name: Get backend url
+          workding_directory: ./frontend
+          command: |
+            export BACKEND_IP=$(aws ec2 decribe-instances --query 'Reservations[*].Instances[*].PublicIpAddress')
+            export API_URL="https://${BACKEND_IP}:3030"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="https://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend.env
+      - run:
+          name: Deploy frontend objects
+          working_directory: ./frontend
+          command: |
+            npm install 
+            npm install oauth2
+            npm install webpack
+            npm run build
+            tar -czvf artifact="${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp ./dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
+      - persist_to_workspace:
+          root: .
+          paths:
+            - frontend/dist
+      - destroy-environment
+      - revert-migrations
+ 
 
 workflows:
   default:
@@ -228,3 +266,5 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [deploy-infrastructure, configure-infrastructure]
+      - deploy-fronted:
+          requires: [deploy-infrastructure, configure-infrastructure, run-migrations]
