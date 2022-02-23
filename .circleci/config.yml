@@ -216,9 +216,8 @@ jobs:
       - run:
           name: Install tar/gzip utility
           command: |
-            sudo apt-get install tar
-            sudo apt-get install gzip
-            sudo apt-get install unzip
+            yum install -y tar gzip
+            yup install -y unzip
       - run:
           name: Install dependencies
           command: |
