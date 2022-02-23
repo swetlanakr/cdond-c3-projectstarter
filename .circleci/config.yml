@@ -218,6 +218,7 @@ jobs:
           command: |
             yum -y install tar
             yum -y install gzip
+            sudo apt install unzip
       - run:
           name: Install dependencies
           command: |
@@ -251,6 +252,43 @@ jobs:
       - destroy-environment
       - revert-migrations
  
+#deploy-backend:
+#    docker:
+#      - image: 
+#    steps:
+#      - checkout
+#      - add_ssh_keys:
+#          fingerprints: ["33:e8:e6:2b:6f:ec:39:36:4d:3d:62:ce:2c:97:36:48"]
+#      - attach_workspace:
+#          at: .
+#      - run:
+#          name: Install dependencies
+#          command: |
+#            cd /tmp
+#            apk add --update ansible curl rsync openssh nodejs npm tar gzip
+#            pip install awscli
+#      - restore_cache:
+#          keys: ["v5-backend-dist", "v5-backend-build"]
+#      - run:
+#          name: Compress dist Files
+#          command: |
+#            cd /home
+#            tar czf backend.tar.gz -P /home/circleci/project/backend
+#      - run:
+ #         name: Deploy backend
+#          working_directory: ./.circleci/ansible
+#          command: |
+#            # your code here
+#           ls -al && pwd
+#            cat inventory.txt
+#            ansible-playbook -i inventory.txt deploy-backend.yml -vv
+#      - run:
+#          name: Install AWS CLI for rollback
+#          when: on_fail
+#          command: |
+#            apk add --update py3-pip && pip3 install --upgrade pip && pip3 install awscli
+      #- destroy-environment
+      #- revert-migrations
 
 workflows:
   default:
