@@ -213,13 +213,13 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - attach_workspace:
-          at: .
       - run:
           name: Install tar/gzip utility
           command: |
             yum install -y tar gzip
-            yum install -y unzip
+            yum install -y unzip      
+      - attach_workspace:
+          at: .
       - run:
           name: Install dependencies
           command: |
