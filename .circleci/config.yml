@@ -221,7 +221,7 @@ jobs:
             yum install -y unzip      
       - attach_workspace:
           at: .
-     - restore_cache:
+      - restore_cache:
           keys: [frontend-build]
       - run:
           name: Install dependencies
