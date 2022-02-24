@@ -232,7 +232,7 @@ jobs:
           name: Get backend url
           workding_directory: ./frontend
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters Name=instance-state-name,Values=running)
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters Name=instance-state-name,Values=running --output text)
             export API_URL="https://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="https://${BACKEND_IP}:3030" >> frontend/.env
@@ -241,8 +241,8 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            sudo apt-get npm install 
-            sudo apt-get npm run build
+            sudo npm install 
+            sudo npm run build
             tar -czvf artifact="${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp ./dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
       - persist_to_workspace:
