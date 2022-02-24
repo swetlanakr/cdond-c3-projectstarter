@@ -239,11 +239,9 @@ jobs:
             cat frontend/.env
       - run:
           name: Deploy frontend objects
-          working_directory: ./frontend
           command: |
+            cd frontend
             npm install 
-            npm install oauth2
-            npm install webpack
             npm run build
             tar -czvf artifact="${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp ./dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
@@ -251,7 +249,7 @@ jobs:
           root: .
           paths:
             - frontend/dist
-#      - destroy-environment
+      - destroy-environment
       - revert-migrations
  
 #deploy-backend:
