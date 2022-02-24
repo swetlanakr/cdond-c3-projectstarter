@@ -249,8 +249,8 @@ jobs:
           root: .
           paths:
             - frontend/dist
-      - destroy-environment
-      - revert-migrations
+#      - destroy-environment
+#      - revert-migrations
  
 #deploy-backend:
 #    docker:
