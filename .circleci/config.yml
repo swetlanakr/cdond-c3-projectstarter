@@ -232,7 +232,7 @@ jobs:
           name: Get backend url
           workding_directory: ./frontend
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress')
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters Name=instance-state-name,Values=running)
             export API_URL="https://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="https://${BACKEND_IP}:3030" >> frontend/.env
