@@ -211,7 +211,6 @@ jobs:
   deploy-frontend:
     docker:
       - image: amazon/aws-cli
-        user: root
     steps:
       - checkout
       - run:
