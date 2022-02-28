@@ -241,7 +241,6 @@ jobs:
       - run:
           name: Deploy frontend objects
           command: |
-            echo "this is shit"
             cd frontend
             apt-get install -yy npm
             npm install
