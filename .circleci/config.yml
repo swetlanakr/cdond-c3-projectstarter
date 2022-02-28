@@ -243,6 +243,7 @@ jobs:
           command: |
             echo "this is shit"
             cd frontend
+            apt-get install -yy npm
             npm install
             sleep 30
             npm run build
