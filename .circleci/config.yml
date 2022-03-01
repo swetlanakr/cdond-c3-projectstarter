@@ -239,10 +239,9 @@ jobs:
       - run:
           name: Deploy frontend objects
           command: |
-            apt-get upgrade
-            apt-get install -yy npm 
-            npm run build
             cd frontend
+            yum install -y npm
+            npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
 #      - persist_to_workspace:
