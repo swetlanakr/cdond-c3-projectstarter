@@ -242,7 +242,7 @@ jobs:
           name: Deploy frontend objects
           working_directory: ./frontend
           command: |
-            sudo apt-get install -yy npm
+            sudo npm install
             sleep 30
             npm run build
             tar -czvf artifact="${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
@@ -256,7 +256,7 @@ jobs:
  
 #deploy-backend:
 #    docker:
-#      - image: 
+#      - image: python:3.7-alpine3.11
 #    steps:
 #      - checkout
 #      - add_ssh_keys:
