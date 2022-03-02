@@ -295,12 +295,12 @@ jobs:
               echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
               npm run build
               npm run prestart:prod
-        - run:
-            name: build zip file
-            command: |
-              cd /root/project/
-              tar -zcvf api.tar.gz backend/
-              mv api.tar.gz ~/project/.circleci/ansible/roles/deploy/files/
+#        - run:
+#            name: build zip file
+#            command: |
+#              cd /root/project/
+#              tar -zcvf api.tar.gz backend/
+#              mv api.tar.gz ~/project/.circleci/ansible/roles/deploy/files/
         - run:
             name: Deploy backend
             command: |
