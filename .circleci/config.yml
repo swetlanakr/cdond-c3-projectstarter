@@ -171,7 +171,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: .
+          at: ~/
       - add_ssh_keys:
           fingerprints: ["33:e8:e6:2b:6f:ec:39:36:4d:3d:62:ce:2c:97:36:48"]
       - run:
@@ -223,7 +223,9 @@ jobs:
           name: Install tar/gzip utility
           command: |
             yum install -y tar gzip
-            yum install -y unzip      
+            yum install -y unzip 
+      - attach_workspace:
+          at: ~/     
       - run:
           name: Install dependencies
           command: |
@@ -263,7 +265,7 @@ jobs:
         - add_ssh_keys:
             fingerprints: ["33:e8:e6:2b:6f:ec:39:36:4d:3d:62:ce:2c:97:36:48"]
         - attach_workspace:
-            at: .
+            at: ~/
         - run:
             name: Install dependencies
             command: |
