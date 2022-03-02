@@ -157,6 +157,7 @@ jobs:
             echo [web] > inventory.txt
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text >> inventory.txt
       - persist_to_workspace:
           root: .
@@ -236,7 +237,7 @@ jobs:
           name: Get backend url
           workding_directory: ./frontend
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters Name=instance-state-name,Values=running --output text)
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
             export API_URL="https://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="https://${BACKEND_IP}:3030" >> frontend/.env
@@ -288,8 +289,8 @@ jobs:
               echo "Contents  of the inventory.txt file is -------"
               cat inventory.txt
               ansible-playbook -i inventory.txt deploy-backend.yml  
-#        - destroy-environment
-#        - revert-migrations
+        - destroy-environment
+        - revert-migrations
 
   smoke-test:
       docker:
@@ -332,8 +333,8 @@ jobs:
               else
                 exit 1
               fi
-#        - destroy-environment
-#        - revert-migrations
+        - destroy-environment
+        - revert-migrations
 
 workflows:
   default:
