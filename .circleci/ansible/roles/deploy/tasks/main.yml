@@ -10,7 +10,7 @@
 - name: copy backend files
   become: yes
   copy:
-    src: /home/ubuntu/project/artifact.tar.gz
+    src: /home/ubuntu/artifact.tar.gz
     dest: /home/ubuntu/backend/artifact.tar.gz
 
 - name: unpack backend files
