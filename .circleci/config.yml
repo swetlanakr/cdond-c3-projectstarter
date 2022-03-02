@@ -274,10 +274,10 @@ jobs:
               pip install awscli
               aws --version
         - run:
-          name: install node modules
-          command: |
-            cd /root/project/backend
-            npm install
+            name: install node modules
+            command: |
+              cd /root/project/backend
+              npm install
         - run:
             name: build backend dist
             command: |
