@@ -192,7 +192,7 @@ jobs:
             npm run build
             npm run migrations > migration_status
       - run:
-          name: Send migration results to memstash
+          name: Send migration results to KVDB.io
           working_directory: ./backend
           command: |
             echo "insecure" >> ~/.curlrc
@@ -210,7 +210,7 @@ jobs:
  
   deploy-frontend:
     docker:
-      - image: amazon/aws-cli
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - run:
@@ -238,7 +238,6 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            echo whereis sudo
             npm install
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
