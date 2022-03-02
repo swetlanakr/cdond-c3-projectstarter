@@ -247,6 +247,8 @@ jobs:
             cd frontend
             curl -sL https://rpm.nodesource.com/setup_lts.x | bash -
             yum -y install nodejs
+            yum -< install npm
+            sleep 30
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
