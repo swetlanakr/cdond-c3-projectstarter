@@ -127,7 +127,6 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-#      - run: yum install -y tar gzip jq npm
       - run:
           name: Install Dependencies
           command: |
