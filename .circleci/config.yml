@@ -350,12 +350,12 @@ jobs:
         - run:
             name: Store old WorkflowID
             command: |
-              OldWorkflowID=$(aws cloudformation \
+              export OldWorkflowID=$(aws cloudformation \
                 list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
                 --no-paginate --output text)
               echo OldWorkflowID: $OldWorkflowID
               # Push it to kvdb.io
-              curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid -d $OldWorkflowID
+              curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid -d "$OldWorkflowID"
         - run:
             name: Update cloudfront distribution
             command: |
@@ -384,11 +384,10 @@ jobs:
           command: |
             #export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
             #get OldWorkflowID
-            #export OldWorkflowID=${curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid}
-            curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid
+            curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid >> ~/OldWorkflowID.txt
             export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
-            echo OldWorkflowID:"${OldWorkflowID}" >> ~/OldWorkflowID.txt
-            echo OldWorkflowID: $(cat ~/OldWorkflowID.txt)
+            #echo OldWorkflowID:"${OldWorkflowID}" >> ~/OldWorkflowID.txt
+            echo OldWorkflowID: ${OldWorkflowID}
             
             export CurrentWorkflowID=$(aws cloudformation \
             list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
