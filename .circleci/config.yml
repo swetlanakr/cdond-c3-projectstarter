@@ -354,6 +354,8 @@ jobs:
                 list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
                 --no-paginate --output text)
               echo OldWorkflowID: $OldWorkflowID
+              # Push it to kvdb.io
+              curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid -d '$OldWorkflowID'
         - run:
             name: Update cloudfront distribution
             command: |
@@ -380,7 +382,9 @@ jobs:
       - run:
           name: Remove old stacks and files
           command: |
-            export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
+            #export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
+            #get OldWorkflowID
+            export OldWorkflowID=${curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid}
             echo OldWorkflowID:"${OldWorkflowID}"
             
             export CurrentWorkflowID=$(aws cloudformation \
