@@ -384,8 +384,11 @@ jobs:
           command: |
             #export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
             #get OldWorkflowID
-            export OldWorkflowID=${curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid}
-            echo OldWorkflowID:"${OldWorkflowID}"
+            #export OldWorkflowID=${curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid}
+            curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid
+            export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
+            echo OldWorkflowID:"${OldWorkflowID}" >> ~/OldWorkflowID.txt
+            echo OldWorkflowID: $(cat ~/OldWorkflowID.txt)
             
             export CurrentWorkflowID=$(aws cloudformation \
             list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
