@@ -382,11 +382,9 @@ jobs:
       - run:
           name: Remove old stacks and files
           command: |
-            #export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
             #get OldWorkflowID
             curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid >> ~/OldWorkflowID.txt
             export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
-            #echo OldWorkflowID:"${OldWorkflowID}" >> ~/OldWorkflowID.txt
             echo OldWorkflowID: ${OldWorkflowID}
             
             export CurrentWorkflowID=$(aws cloudformation \
@@ -395,15 +393,15 @@ jobs:
             echo CurrentWorkflowID:"${CurrentWorkflowID}"
             
             echo "udapeople-${OldWorkflowID}"
-            echo "udapeople-backend-${OldWorkflowID}"
-            echo "udapeople-frontend-${OldWorkflowID}"
+            echo "backend-${OldWorkflowID}"
+            echo "frontend-${OldWorkflowID}"
             
             if [[ "${CurrentWorkflowID}" != "${OldWorkflowID}" ]]
             then
                 echo "i am in"
                 aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
-                aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
-                aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+                aws cloudformation delete-stack --stack-name "backend-${OldWorkflowID}"
+                aws cloudformation delete-stack --stack-name "rontend-${OldWorkflowID}"
              else
                 echo "i am out"
             fi   
