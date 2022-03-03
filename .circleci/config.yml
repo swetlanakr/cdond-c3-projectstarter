@@ -355,7 +355,7 @@ jobs:
                 --no-paginate --output text)
               echo OldWorkflowID: $OldWorkflowID
               # Push it to kvdb.io
-              curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid-${OldWorkflowID} -d "$OldWorkflowID"
+              curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid -d "$OldWorkflowID"
         - run:
             name: Update cloudfront distribution
             command: |
@@ -383,7 +383,7 @@ jobs:
           name: Remove old stacks and files
           command: |
             #get OldWorkflowID
-            curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid-${OldWorkflowID} >> ~/OldWorkflowID.txt
+            curl https://kvdb.io/B1Ct8L4ord1FeiK7SjsNvG/oldworkflowid >> ~/OldWorkflowID.txt
             export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
             echo OldWorkflowID: ${OldWorkflowID}
             
