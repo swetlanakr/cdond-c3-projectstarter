@@ -366,6 +366,41 @@ jobs:
         - destroy-environment
         - revert-migrations
 
+  cleanup:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y tar gzip           
+      - attach_workspace:
+          at: .     
+      - run:
+          name: Remove old stacks and files
+          command: |
+            export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
+            echo OldWorkflowID:"${OldWorkflowID}"
+            
+            export CurrentWorkflowID=$(aws cloudformation \
+            list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+            --no-paginate --output text)
+            echo CurrentWorkflowID:"${CurrentWorkflowID}"
+            
+            echo "udapeople-${OldWorkflowID}"
+            echo "udapeople-backend-${OldWorkflowID}"
+            echo "udapeople-frontend-${OldWorkflowID}"
+            
+            if [[ "${CurrentWorkflowID}" != "${OldWorkflowID}" ]]
+            then
+                echo "i am in"
+                aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+                aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+                aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+             else
+                echo "i am out"
+            fi   
 
 workflows:
   default:
@@ -391,6 +426,8 @@ workflows:
       - deploy-backend:
           requires: [deploy-infrastructure, configure-infrastructure, run-migrations, deploy-frontend]
       - smoke-test:
-          requires: [deploy-infrastructure, configure-infrastructure, run-migrations, deploy-frontend, deploy-backend]
+          requires: [run-migrations, deploy-frontend, deploy-backend]
       - cloudfront-update:
-          requires: [deploy-infrastructure, configure-infrastructure, run-migrations, deploy-frontend, deploy-backend, smoke-test]
+          requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]

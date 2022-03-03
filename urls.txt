@@ -2,4 +2,4 @@ URL01:
 https://github.com/swetlanakr/cdond-c3-projectstarter
 
 URL02:
-http://udapeople-36f587c.s3-website-us-east-1.amazonaws.com
+http://udapeople-5e96c63.s3-website-us-east-1.amazonaws.com
