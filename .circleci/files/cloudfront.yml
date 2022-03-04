@@ -20,7 +20,11 @@ Resources:
     Properties:
       DistributionConfig:
         Origins:
-          - DomainName: !Sub "udapeople-${WorkflowID}.s3-website-us-east-1.amazonaws.com"
+          - CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginProtocolPolicy: 'http-only'
+            DomainName: !Sub "udapeople-${WorkflowID}.s3-website-us-east-1.amazonaws.com"
             Id: webpage
         Enabled: True
         DefaultRootObject: index.html
@@ -29,10 +33,7 @@ Resources:
             QueryString: False
           TargetOriginId: webpage
           ViewerProtocolPolicy: allow-all
-      CustomOriginConfig:
-        HTTPPort: 80
-        HTTPSPort: 443
-        OriginProtocolPolicy: http-only
+
 
 Outputs:
   WorkflowID:
