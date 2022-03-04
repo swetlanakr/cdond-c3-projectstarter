@@ -20,11 +20,11 @@ Resources:
     Properties:
       DistributionConfig:
         Origins:
-          - CustomOriginConfig:
-              HTTPPort: 80
-              HTTPSPort: 443
-              OriginProtocolPolicy: 'http-only'
-            DomainName: !Sub "udapeople-${WorkflowID}.s3-website-us-east-1.amazonaws.com"
+#          - CustomOriginConfig:
+#              HTTPPort: 80
+#              HTTPSPort: 443
+#              OriginProtocolPolicy: 'http-only'
+          - DomainName: !Sub "udapeople-${WorkflowID}.s3-website-us-east-1.amazonaws.com"
             Id: webpage
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"
